@@ -23,7 +23,7 @@ const JobDescription = () => {
 
     const applyJobHandler = async (jobId) => {
         try {
-            const res = await axios.post(`${APPLICATION_JOB_END_POINT}/apply/${jobId}`, { withCredentials: true });
+            const res = await axios.post(`${APPLICATION_JOB_END_POINT}/apply/${jobId}`,  { resume: "resume.pdf" }, { withCredentials: true });
             if (res.data.success) {
                 setIsApplied(true);
                 const updateSingleJob = { 
@@ -54,6 +54,8 @@ const JobDescription = () => {
                 }
             } catch (err) {
                 console.log(err);
+                console.log("Applying for job id:", jobId);
+
             }
         }
         FetchSingleJobs();

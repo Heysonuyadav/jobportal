@@ -136,7 +136,7 @@ const ApplicantsTable = () => {
                                                 <Button
                                                     key={status.value}
                                                     variant="ghost"
-                                                    className={`justify-start h-8 ${status.color} ${application.status === status.value? "bg-gray-100" : "" }`}onClick={() => statusHandler(status.value, application._id)}>
+                                                    className={`justify-start h-8 ${status.color} ${application.status === status.value? "bg-gray-100" : "" }`} onClick={() => statusHandler(status.value, application._id)}>
                                                     {status.label}
                                                 </Button>
                                             ))}

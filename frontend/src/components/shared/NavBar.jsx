@@ -1,22 +1,20 @@
 import React from 'react'
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { User2, LogOut } from 'lucide-react';
+import { User2, LogOut, Briefcase, Home, Search } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-hot-toast';
 import axios from "axios";
 import { setUser } from "@/redux/authSlice";
-import {Avatar,AvatarFallback,AvatarImage,} from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { USER_API_ENDPOINT } from '../../uttils/constant';
-
+import { motion, AnimatePresence } from "framer-motion"
 
 const NavBar = () => {
-
     const { user } = useSelector(store => store.auth)
     const dispatch = useDispatch();
     const navigate = useNavigate();
-
 
     const logOutHandler = async () => {
         try {
@@ -29,94 +27,224 @@ const NavBar = () => {
         } catch (error) {
             console.log(error)
             toast.error(error.response?.data?.message || "Logout failed")
-
         }
     }
 
+    // Animation variants
+    const containerVariants = {
+        hidden: { opacity: 0, y: -20 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                duration: 0.5,
+                ease: "easeOut"
+            }
+        }
+    };
+
+    const itemVariants = {
+        hidden: { opacity: 0, y: -10 },
+        visible: { opacity: 1, y: 0 }
+    };
+
+    const popoverItemVariants = {
+        hidden: { opacity: 0, x: -10 },
+        visible: { opacity: 1, x: 0 }
+    };
+
     return (
-        <div className="bg-white shadow fixed top-0 left-0 w-full z-50">
-            <div className="flex items-center justify-between h-16 px-8 max-w-7xl mx-auto">
+        <motion.nav
+            initial="hidden"
+            animate="visible"
+            variants={containerVariants}
+            className="bg-white shadow-lg fixed top-0 left-0 w-full z-50"
+        >
+            <div className="flex items-center justify-between h-16 px-4 md:px-8 max-w-7xl mx-auto">
+                {/* Logo with animation */}
+                <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                >
+                    <Link to="/">
+                        <h1 className="text-2xl font-bold">
+                            Job<span className="text-[#0a6140]">Portal</span>
+                        </h1>
+                    </Link>
+                </motion.div>
 
-
-                <h1 className="text-2xl font-bold">
-                    Job<span className="text-red-600">Portal</span>
-                </h1>
-
-
-                <div className="flex items-center gap-6">
-                    <ul className="flex gap-5 font-mono">
-                        {
-                            user && user.role === 'recruiter' ? (
+                <div className="flex items-center gap-4 md:gap-6">
+                    {/* Navigation links with staggered animation */}
+                    <motion.ul 
+                        className="hidden md:flex gap-5 font-medium"
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="visible"
+                    >
+                        <AnimatePresence>
+                            {user && user.role === 'recruiter' ? (
                                 <>
-                                    <li className="cursor-pointer font-semibold"><Link to='/admin/companies'>Company</Link></li>
-                                    <li className="cursor-pointer font-semibold"><Link to='/admin/jobs'>Jobs</Link></li>
+                                    <motion.li 
+                                        className="cursor-pointer font-semibold"
+                                        variants={itemVariants}
+                                        whileHover={{ scale: 1.1 }}
+                                        whileTap={{ scale: 0.95 }}
+                                    >
+                                        <Link to='/admin/companies' className="flex items-center gap-1">
+                                            <Briefcase size={16} />
+                                            Company
+                                        </Link>
+                                    </motion.li>
+                                    <motion.li 
+                                        className="cursor-pointer font-semibold"
+                                        variants={itemVariants}
+                                        whileHover={{ scale: 1.1 }}
+                                        whileTap={{ scale: 0.95 }}
+                                    >
+                                        <Link to='/admin/jobs' className="flex items-center gap-1">
+                                            <Briefcase size={16} />
+                                            Jobs
+                                        </Link>
+                                    </motion.li>
                                 </>
                             ) : (
                                 <>
-                                    <li className="cursor-pointer"><Link to='/'>Home</Link></li>
-                                    <li className="cursor-pointer"><Link to='/jobs'>Jobs</Link></li>
-                                    <li className="cursor-pointer"><Link to='/browse'>Browse</Link></li>
+                                    <motion.li 
+                                        className="cursor-pointer"
+                                        variants={itemVariants}
+                                        whileHover={{ scale: 1.1 }}
+                                        whileTap={{ scale: 0.95 }}
+                                    >
+                                        <Link to='/' className="flex items-center gap-1">
+                                            <Home size={16} />
+                                            Home
+                                        </Link>
+                                    </motion.li>
+                                    <motion.li 
+                                        className="cursor-pointer"
+                                        variants={itemVariants}
+                                        whileHover={{ scale: 1.1 }}
+                                        whileTap={{ scale: 0.95 }}
+                                    >
+                                        <Link to='/jobs' className="flex items-center gap-1">
+                                            <Briefcase size={16} />
+                                            Jobs
+                                        </Link>
+                                    </motion.li>
+                                    <motion.li 
+                                        className="cursor-pointer"
+                                        variants={itemVariants}
+                                        whileHover={{ scale: 1.1 }}
+                                        whileTap={{ scale: 0.95 }}
+                                    >
+                                        <Link to='/browse' className="flex items-center gap-1">
+                                            <Search size={16} />
+                                            Browse
+                                        </Link>
+                                    </motion.li>
                                 </>
-                            )
-                        }
+                            )}
+                        </AnimatePresence>
+                    </motion.ul>
 
-                    </ul>
-                    {!user ? (
-                        <div className='flex items-center gap-2'>
-                            <Link to='/login'>
-                                <Button className='bg-zinc-700 hover:bg-black hover:text-white text-white' variant='outline'>login</Button>
-                            </Link>
-                            <Link to='/signUp'>
-                                <Button className='p-3 bg-[#0a6140] hover:bg-[#204335]'>signUp</Button>
-                            </Link>
-                        </div>
-
-
-
-                    ) : (
-                        <Popover>
-                            <PopoverTrigger asChild>
-                                <Avatar className='cursor-pointer'>
-                                    <AvatarImage src={user?.profile?.profilephoto} alt="@shadcn" />
-
-                                </Avatar>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-80">
-                                <div className=' gap-2 space-y-2'>
-
-                                    <Avatar className='cursor-pointer'>
-                                        <AvatarImage src={user?.profile?.profilephoto} alt="@shadcn" />
-                                    </Avatar>
-                                    <p className="text-sm text-black">{user?.fullname || "Guest"}<span className='text-red-800'> MernStack</span></p>
-                                   
-                                </div>
-                                <div className='flex flex-col gap-3 mt-4'>
-
-                                    {
-                                        user && user.role === 'student' && (
-                                            <div className='flex w-fit gap-2 cursor-pointer'>
-                                                <User2 />
-                                                <button variant='link'> <Link to='/profileui'>view profile</Link></button>
+                    {/* Auth buttons or user avatar */}
+                    <AnimatePresence mode="wait">
+                        {!user ? (
+                            <motion.div 
+                                className='flex items-center gap-2'
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.3 }}
+                            >
+                                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                                    <Link to='/login'>
+                                        <Button className='bg-zinc-700 hover:bg-black text-white' variant='outline'>Login</Button>
+                                    </Link>
+                                </motion.div>
+                                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                                    <Link to='/signUp'>
+                                        <Button className='p-3 bg-[#0a6140] hover:bg-[#204335]'>Sign Up</Button>
+                                    </Link>
+                                </motion.div>
+                            </motion.div>
+                        ) : (
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.8 }}
+                                transition={{ duration: 0.3 }}
+                            >
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <motion.div
+                                            whileHover={{ scale: 1.1 }}
+                                            whileTap={{ scale: 0.9 }}
+                                        >
+                                            <Avatar className='cursor-pointer border-2 border-[#0a6140]'>
+                                                <AvatarImage src={user?.profile?.profilephoto} alt={user?.fullname} />
+                                                <AvatarFallback className="bg-[#0a6140] text-white">
+                                                    {user?.fullname?.charAt(0) || 'U'}
+                                                </AvatarFallback>
+                                            </Avatar>
+                                        </motion.div>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-60 p-4" align="end">
+                                        <motion.div
+                                            initial="hidden"
+                                            animate="visible"
+                                            variants={containerVariants}
+                                            className="space-y-4"
+                                        >
+                                            <motion.div 
+                                                className="flex items-center gap-3"
+                                                variants={popoverItemVariants}
+                                            >
+                                                <Avatar className="h-12 w-12">
+                                                    <AvatarImage src={user?.profile?.profilephoto} alt={user?.fullname} />
+                                                    <AvatarFallback className="bg-[#0a6140] text-white">
+                                                        {user?.fullname?.charAt(0) || 'U'}
+                                                    </AvatarFallback>
+                                                </Avatar>
+                                                <div>
+                                                    <p className="font-semibold text-sm">{user?.fullname || "Guest"}</p>
+                                                    <p className="text-xs text-gray-500">{user?.role}</p>
+                                                </div>
+                                            </motion.div>
+                                            
+                                            <div className="border-t pt-3 space-y-2">
+                                                {user && user.role === 'student' && (
+                                                    <motion.div 
+                                                        className="flex items-center gap-2 cursor-pointer text-sm hover:text-[#0a6140]"
+                                                        variants={popoverItemVariants}
+                                                        whileHover={{ x: 5 }}
+                                                        transition={{ type: "spring", stiffness: 300 }}
+                                                    >
+                                                        <User2 size={16} />
+                                                        <Link to='/profileui'>View Profile</Link>
+                                                    </motion.div>
+                                                )}
+                                                
+                                                <motion.div 
+                                                    className="flex items-center gap-2 cursor-pointer text-sm hover:text-red-600"
+                                                    variants={popoverItemVariants}
+                                                    whileHover={{ x: 5 }}
+                                                    transition={{ type: "spring", stiffness: 300 }}
+                                                    onClick={logOutHandler}
+                                                >
+                                                    <LogOut size={16} />
+                                                    <span>Logout</span>
+                                                </motion.div>
                                             </div>
-                                        )
-                                    }
-
-
-                                    <div className='flex w-fit gap-2 cursor-pointer'>
-                                        <LogOut />
-                                        <button onClick={logOutHandler} variant='link'>logout</button>
-                                    </div>
-                                    
-                                </div>
-                            </PopoverContent>
-                        </Popover>
-                    )
-                    }
-
-
+                                        </motion.div>
+                                    </PopoverContent>
+                                </Popover>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </div>
             </div>
-        </div>
+        </motion.nav>
     )
 }
 
