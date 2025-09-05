@@ -15,7 +15,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { Loader2 } from 'lucide-react';
-import { JOB_API_END_POINT,COMPANIES_JOB_END_POINT } from '../../uttils/constant';
+import { JOB_API_END_POINT, COMPANIES_JOB_END_POINT } from '../../uttils/constant';
 
 const PostJob = () => {
     const [companies, setCompanies] = useState([]);
@@ -23,13 +23,13 @@ const PostJob = () => {
     const [companiesLoading, setCompaniesLoading] = useState(true);
     const navigate = useNavigate();
 
-    const [input, setInput] = useState({
+     const [input, setInput] = useState({
         title: "",
         description: "",
-        requirement: "",
+        requirements: "",  
         salary: "",
         location: "",
-        jobType: "",
+        jobtype: "",       
         experience: "",
         position: 0,
         companyId: ""
@@ -39,7 +39,7 @@ const PostJob = () => {
     useEffect(() => {
         const fetchCompanies = async () => {
             try {
-                const res = await axios.get(`${COMPANIES_JOB_END_POINT}/companies`, {
+                const res = await axios.get(`${COMPANIES_JOB_END_POINT}/getcompany`, {
                     withCredentials: true
                 });
                 if (res.data.success) {
@@ -134,7 +134,7 @@ const PostJob = () => {
                             <Label>Requirements *</Label>
                             <textarea
                                 className='w-full focus-visible:ring-offset-0 focus-visible:ring-1 my-1 border rounded p-2'
-                                name='requirement'
+                                name='requirements'
                                 rows="3"
                                 value={input.requirement}
                                 onChange={changeEventHandler}
@@ -167,7 +167,7 @@ const PostJob = () => {
                             <Label>Job Type *</Label>
                             <select
                                 className='w-full focus-visible:ring-offset-0 focus-visible:ring-1 my-1 border rounded p-2'
-                                name='jobType'
+                                name='jobtype'
                                 value={input.jobType}
                                 onChange={changeEventHandler}
                                 required>
@@ -220,11 +220,16 @@ const PostJob = () => {
                                     <SelectContent>
                                         <SelectGroup>
                                             <SelectLabel>Companies</SelectLabel>
-                                            {companies.map((company) => (
-                                                <SelectItem key={company._id} value={company.name.toLowerCase()}>
-                                                    {company.name}
-                                                </SelectItem>
-                                            ))}
+                                            {companies.map((company) => {
+                                                const value = company.name?.toLowerCase() || company._id;
+                                                const label = company.name || `Company ${company._id}`;
+                                                return (
+                                                    <SelectItem key={company._id} value={value}>
+                                                        {label}
+                                                    </SelectItem>
+                                                );
+                                            })}
+
                                         </SelectGroup>
                                     </SelectContent>
                                 </Select>

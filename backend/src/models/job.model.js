@@ -40,12 +40,12 @@ const jobSchema = new mongoose.Schema({
         ref: 'userId',
         
     },
-    application: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Application',
-    },
+    // application: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'Application',
+    // },
     experience:{
-        type:Number,
+        type:String,
         required:true
     }
 

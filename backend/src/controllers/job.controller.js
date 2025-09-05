@@ -1,10 +1,14 @@
 import Job from '../models/job.model.js'
+
 export async function postJob(req, res) {
     try {
-        const { title, description, companyId, application, experience, requirements, salary, location, jobtype, position } = req.body;
+        const { title, description, companyId, experience, requirements, salary, location, jobtype, position } = req.body;
         const userId = req._id;
+        console.log("Incoming job data:", req.body); 
+console.log("User ID:", userId);
 
-        if (!title || !description || !companyId || !application || !requirements || !salary || !location || !jobtype || !position || !experience) {
+
+        if (!title || !description || !companyId || !experience || !requirements || !salary || !location || !jobtype || !position ) {
             return res.status(400).json({
                 message: "something is missing",
                 success: false
@@ -16,7 +20,7 @@ export async function postJob(req, res) {
             description,
             companyId,
             createdby: userId,
-            application,
+          
             experience,
             requirements: requirements.split(',').map(r => r.trim()),
             salary: Number(salary),
