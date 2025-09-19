@@ -109,13 +109,4 @@ function TableCaption({
   );
 }
 
-export {
-  Table,
-  TableHeader,
-  TableBody,
-  TableFooter,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableCaption,
-}
+export default {Table,TableHeader,TableBody,TableFooter,TableHead,TableRow,TableCell,TableCaption,}
