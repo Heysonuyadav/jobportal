@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table.jsx"
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/Table.jsx"
 import { Badge } from "@/components/ui/badge"
 import { useSelector } from 'react-redux'
 
