@@ -1,4 +1,4 @@
-import { Table, TableCaption, TableRow, TableHeader, TableHead, TableBody, TableCell } from '@/components/ui/Table.jsx';
+import { Table, TableCaption, TableRow, TableHeader, TableHead, TableBody, TableCell } from '@/components/ui/Table';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Edit2, MoreHorizontal } from 'lucide-react';
