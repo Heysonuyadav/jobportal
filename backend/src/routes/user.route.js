@@ -9,13 +9,13 @@ router.post('/register', singleUpload, register);
 router.post('/login', login);
 router.get('/logout', logOut);
 
-// 👇 direct try-catch ke sath route
+//  direct try-catch ke sath route
 router.post("/update/profile", isAuthenticated, singleUpload, async (req, res) => {
   try {
 
     res.json({ success: true, message: "Profile updated successfully" });
   } catch (err) {
-    console.error("🔥 Error in update profile:", err);
+    console.error(" Error in update profile:", err);
     res.status(500).json({
       success: false,
       message: "Server error",

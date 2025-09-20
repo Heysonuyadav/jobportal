@@ -10,8 +10,10 @@ import cors from 'cors';
 import dotenv from "dotenv";
 dotenv.config();
 
-app.use(cors({origin:["http://localhost:5173",  "https://jobportal-39n8.vercel.app/", ],credentials:true}));
+app.use(cors({origin:["http://localhost:5173",  "https://jobportal-39n8.vercel.app"],credentials:true}));
 app.use(cookieParser())
+
+
 app.use(express.urlencoded({ extended: true }));
 
 app.use(express.json());
