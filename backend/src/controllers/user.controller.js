@@ -115,7 +115,7 @@ export async function login(req, res) {
         return res.status(200).cookie('token', token, {
             httpOnly: true,
             maxAge: 24 * 60 * 60 * 1000,
-            sameSite: 'strict',
+            sameSite: 'lax',
         }).json({
             message: `welcome back ${userInfo.fullname}`,
             user,

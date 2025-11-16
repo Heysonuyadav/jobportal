@@ -1,71 +1,93 @@
 import React from 'react'
 import { Button } from "@/components/ui/button";
 import { Bookmark } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import { useNavigate } from 'react-router-dom';
 import { Badge } from "@/components/ui/badge"
 
 const Job = ({ job }) => {
-
   const navigate = useNavigate();
-  // const jobId = 'hkfjndkjnfvjkfv'
+
   const daysAgoFunction = (mongodbTime) => {
     if (!mongodbTime) return "N/A";
 
     const createdAt = new Date(mongodbTime);
-    const currentTime = new Date();
+    const now = new Date();
 
-    if (isNaN(createdAt.getTime())) return "Invalid Date";
+    const diffMs = now - createdAt;
+    const mins = Math.floor(diffMs / (1000 * 60));
+    const hrs = Math.floor(diffMs / (1000 * 60 * 60));
+    const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-    const diffMs = currentTime - createdAt;
-    const diffMinutes = Math.floor(diffMs / (1000 * 60));
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-    if (diffMinutes < 1) return "Just now";
-    if (diffMinutes < 60) return `${diffMinutes} min ago`;
-    if (diffHours < 24) return `${diffHours}h ago`;
-    if (diffDays === 0) return "Today";
-    if (diffDays === 1) return "Yesterday";
-    return `${diffDays} days ago`;
+    if (mins < 1) return "Just now";
+    if (mins < 60) return `${mins} min ago`;
+    if (hrs < 24) return `${hrs}h ago`;
+    if (days === 1) return "Yesterday";
+    return `${days} days ago`;
   };
 
-
-
   return (
-    <div className='rounded-md p-4 shadow-xl bg-white border border-gray-300'>
-      <div className='flex items-center justify-between'>
+    <div className="rounded-xl p-4 shadow-xl bg-white border border-gray-200 
+      transition-all duration-200 hover:shadow-2xl 
+      w-full">
 
-        <p>{daysAgoFunction(job?.createdAt || job?.createAt)}</p>
-        <Button varinet='outline' className='rounded-full bg-[#0a6140]' size='icon' ><Bookmark /></Button>
+      {/* Top Row */}
+      <div className="flex items-center justify-between">
+        <p className="text-xs sm:text-sm text-gray-500">
+          {daysAgoFunction(job?.createdAt || job?.createAt)}
+        </p>
+
+        <Button variant="outline" size="icon" className="bg-[#0a6140] text-white">
+          <Bookmark />
+        </Button>
       </div>
-      <div className='flex items-center gap-2 my-2'>
-        <Button className='p-6' variant='outline' size='icon'>
-          <Avatar>
+
+      {/* Logo + Company */}
+      <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3 my-4">
+        <Button variant="outline" size="icon" className="p-5 rounded-full">
+          <Avatar className="w-12 h-12">
             <AvatarImage src={job?.company?.logo} />
           </Avatar>
         </Button>
-        <div>
-          <h1 className='font-bold font-serif'>{job?.companyId?.name || "Company Name"}</h1>
-          <p>India</p>
+
+        <div className="text-center sm:text-left">
+          <h1 className="font-bold text-lg">{job?.companyId?.name || "Company Name"}</h1>
+          <p className="text-gray-500 text-sm">India</p>
         </div>
       </div>
-      <div>
-        <h1>{job?.title || "Job Title"}</h1>
-        <p>{job?.description || "No description available"}</p>
+
+      {/* Job Info */}
+      <div className="mt-2">
+        <h1 className="font-semibold text-lg">{job?.title || "Job Title"}</h1>
+        <p className="text-gray-600 text-sm mt-1">
+          {job?.description || "No description available"}
+        </p>
       </div>
-      <div className='flex items-center gap-3 mt-4'>
-        <Badge className={"text-blue-500 font-bold"}>{job?.position || "position"}</Badge>
-        <Badge className={"text-red-600 font-bold"}>{job?.jobType || "part time"}</Badge>
-        <Badge className={"text-green-400 font-bold"}>{job?.salary || "24LPA"}</Badge>
+
+      {/* Badges */}
+      <div className="flex flex-wrap gap-2 mt-4">
+        <Badge className="font-bold text-blue-600">{job?.position || "Position"}</Badge>
+        <Badge className="font-bold text-red-600">{job?.jobType || "Part Time"}</Badge>
+        <Badge className="font-bold text-green-600">{job?.salary || "24 LPA"}</Badge>
       </div>
-      <div className='flex  justify-between items-center mt-1'>
-        <Button onClick={() => navigate(`/description/${job?._id}`)} variant='outline'>Details</Button>
-        <Button className='bg-[#175a63]'>Save For Later</Button>
+
+      {/* Bottom Buttons */}
+      <div className="flex flex-col sm:flex-row gap-3 justify-between items-center mt-4">
+        <Button 
+          onClick={() => navigate(`/description/${job?._id}`)}
+          variant="outline"
+          className="w-full sm:w-auto"
+        >
+          Details
+        </Button>
+
+        <Button className="bg-[#175a63] w-full sm:w-auto">
+          Save For Later
+        </Button>
       </div>
+
     </div>
+  );
+};
 
-  )
-}
-
-export default Job
+export default Job;

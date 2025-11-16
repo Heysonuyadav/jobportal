@@ -14,10 +14,10 @@ const JobDescription = () => {
     const { user } = useSelector(store => store.auth);
 
     const [isApplied, setIsApplied] = useState(false);
-    const [selectedFile, setSelectedFile] = useState(null); // Store the actual file
-    const [isLoading, setIsLoading] = useState(false); // Loading state
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
-    // Check if user has already applied
+    // Check if user already applied
     useEffect(() => {
         if (singleJob?.applications) {
             const applied = singleJob.applications.some(app => app.applicant === user?._id);
@@ -45,92 +45,114 @@ const JobDescription = () => {
     };
 
     const applyJobHandler = async () => {
-        if (isApplied) {
-            toast.error("You have already applied for this job");
-            return;
-        }
+        if (isApplied) return toast.error("You have already applied");
 
-        if (!selectedFile) {
-            toast.error("Please select a resume file first");
-            return;
-        }
+        if (!selectedFile) return toast.error("Please select a resume first");
 
         setIsLoading(true);
-        
+
         try {
-            // Create FormData for file upload
             const formData = new FormData();
-            formData.append("resume", selectedFile); // Append the actual file
+            formData.append("resume", selectedFile);
 
             const res = await axios.post(
                 `${APPLICATION_JOB_END_POINT}/apply/${jobId}`,
-                formData, 
-                { 
+                formData,
+                {
                     withCredentials: true,
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
+                    headers: { 'Content-Type': 'multipart/form-data' }
                 }
             );
 
             if (res.data.success) {
-                // Update local state and Redux
                 setIsApplied(true);
-                const updatedJob = {
+                dispatch(setSingleJob({
                     ...singleJob,
                     applications: [...singleJob.applications, { applicant: user?._id }]
-                };
-                dispatch(setSingleJob(updatedJob));
+                }));
                 toast.success(res.data.message);
             }
+
         } catch (error) {
-            console.error("Application failed:", error);
-            setIsApplied(false);
-            toast.error(error.response?.data?.message || "Failed to apply. Please try again.");
+            toast.error(error.response?.data?.message || "Failed to apply");
         } finally {
             setIsLoading(false);
         }
     };
 
     return (
-        <div className='max-w-7xl mx-auto m-22'>
-            <div className='flex items-center justify-between'>
-                <div>
-                    <h1 className='font-bold text-2xl'>{singleJob?.title}</h1>
-                    <div className='flex items-center gap-6 m-4'>
-                        <p className='text-red-600'>{singleJob?.position}</p>
-                        <p className='text-green-800'>PartTime</p>
-                        <p className='text-black'>{singleJob?.salary} 24LPA</p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+            {/* Top Row */}
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between 
+                gap-6 mb-6">
+
+                {/* Title + Badge Info */}
+                <div className="w-full md:w-auto">
+                    <h1 className="font-bold text-2xl sm:text-3xl">{singleJob?.title}</h1>
+
+                    <div className="flex flex-wrap items-center gap-4 mt-3 text-sm sm:text-base">
+                        <p className="text-red-600">{singleJob?.position}</p>
+                        <p className="text-green-800">{singleJob?.jobType || "Part Time"}</p>
+                        <p className="text-black">{singleJob?.salary || "24 LPA"}</p>
                     </div>
                 </div>
-                <div className="flex items-center gap-4">
-                    {/* File input */}
+
+                {/* File Upload + Apply Button */}
+                <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+
                     <input
                         type="file"
                         accept=".pdf,.doc,.docx"
                         onChange={handleFileChange}
                         disabled={isApplied || isLoading}
-                        className="border p-2 rounded"
+                        className="border p-2 rounded w-full sm:w-auto"
                     />
+
                     <Button
                         onClick={applyJobHandler}
-                        disabled={isApplied || isLoading || !selectedFile}
-                        className={`rounded-lg ${isApplied ? 'bg-blue-300 text-gray-700 cursor-not-allowed' : 'bg-gray-700 hover:bg-[#142f77]'}`}
+                        disabled={isApplied || isLoading}
+                        className={`rounded-lg w-full sm:w-auto
+            ${isApplied ? 'bg-blue-300 text-gray-700 cursor-not-allowed' : 'bg-gray-700 hover:bg-[#142f77]'}`}
                     >
-                        {isLoading ? 'Applying...' : isApplied ? 'Already Applied' : 'Apply Now'}
+                        {isLoading ? "Applying..." : isApplied ? "Already Applied" : "Apply Now"}
                     </Button>
+
                 </div>
+
             </div>
-            
-            {/* Rest of your JSX remains the same */}
-            <h1 className='font-bold text-xl'>{singleJob?.description}</h1>
-            <div className='p-2'>
-                <h1 className='font-bold my-2'>Role: <span className='pl-4 font-normal text-gray-800'>{singleJob?.title}</span></h1>
-                <h1 className='font-bold my-2'>Location: <span className='pl-4 font-normal text-gray-800'>{singleJob?.location}</span></h1>
-                <h1 className='font-bold my-2'>Description: <span className='pl-4 font-normal text-gray-800'>{singleJob?.description}</span></h1>
-                <h1 className='font-bold my-2'>Experience: <span className='pl-4 font-normal text-gray-800'>{singleJob?.experience}</span></h1>
-                <h1 className='font-bold my-2'>Project: <span className='pl-4 font-normal text-gray-800'>Campus navigation</span></h1>
-                <h1 className='font-bold my-2'>Apply date: <span className='pl-4 font-normal text-gray-800'>{singleJob?.createdAt?.split("T")[0]}</span></h1>
+
+            {/* Description Section */}
+            <h1 className="font-bold text-xl sm:text-2xl">{singleJob?.description}</h1>
+
+            <div className="p-2 mt-4 space-y-3 text-sm sm:text-base">
+
+                <h1 className="font-bold">
+                    Role: <span className="font-normal text-gray-800 pl-2">{singleJob?.title}</span>
+                </h1>
+
+                <h1 className="font-bold">
+                    Location: <span className="font-normal text-gray-800 pl-2">{singleJob?.location}</span>
+                </h1>
+
+                <h1 className="font-bold">
+                    Description: <span className="font-normal text-gray-800 pl-2">{singleJob?.description}</span>
+                </h1>
+
+                <h1 className="font-bold">
+                    Experience: <span className="font-normal text-gray-800 pl-2">{singleJob?.experience}</span>
+                </h1>
+
+                <h1 className="font-bold">
+                    Project: <span className="font-normal text-gray-800 pl-2">Campus navigation</span>
+                </h1>
+
+                <h1 className="font-bold">
+                    Apply date:
+                    <span className="font-normal text-gray-800 pl-2">
+                        {singleJob?.createdAt?.split("T")[0]}
+                    </span>
+                </h1>
             </div>
         </div>
     );

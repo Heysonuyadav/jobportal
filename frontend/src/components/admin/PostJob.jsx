@@ -10,7 +10,7 @@ import {
     SelectValue,
     SelectGroup,
     SelectLabel
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -23,25 +23,25 @@ const PostJob = () => {
     const [companiesLoading, setCompaniesLoading] = useState(true);
     const navigate = useNavigate();
 
-     const [input, setInput] = useState({
+    const [input, setInput] = useState({
         title: "",
         description: "",
-        requirements: "",  
+        requirements: "",
         salary: "",
         location: "",
-        jobtype: "",       
+        jobtype: "",
         experience: "",
         position: 0,
         companyId: ""
     });
 
-    // Fetch companies on component mount
     useEffect(() => {
         const fetchCompanies = async () => {
             try {
                 const res = await axios.get(`${COMPANIES_JOB_END_POINT}/getcompany`, {
                     withCredentials: true
                 });
+
                 if (res.data.success) {
                     setCompanies(res.data.companies || []);
                 }
@@ -61,7 +61,10 @@ const PostJob = () => {
     };
 
     const selectChangeHandler = (value) => {
-        const selectedCompany = companies.find((company) => company.name.toLowerCase() === value);
+        const selectedCompany = companies.find(
+            (company) => company.name.toLowerCase() === value
+        );
+
         if (selectedCompany) {
             setInput({ ...input, companyId: selectedCompany._id });
         }
@@ -70,7 +73,6 @@ const PostJob = () => {
     const submitHandler = async (e) => {
         e.preventDefault();
 
-        // Validation
         if (!input.companyId && companies.length > 0) {
             toast.error("Please select a company");
             return;
@@ -78,10 +80,9 @@ const PostJob = () => {
 
         try {
             setLoading(true);
+
             const res = await axios.post(`${JOB_API_END_POINT}/postjob`, input, {
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 withCredentials: true
             });
 
@@ -90,11 +91,7 @@ const PostJob = () => {
                 navigate("/admin/jobs");
             }
         } catch (error) {
-            if (error.response) {
-                toast.error(error.response.data.message);
-            } else {
-                toast.error(error.message || "Something went wrong!");
-            }
+            toast.error(error.response?.data?.message || "Something went wrong!");
         } finally {
             setLoading(false);
         }
@@ -103,74 +100,97 @@ const PostJob = () => {
     return (
         <div>
             <Navbar />
-            <div className='flex items-center justify-center w-screen my-5 p-20'>
-                <form onSubmit={submitHandler} className='p-8 max-w-4xl border shadow-lg rounded-md'>
-                    <h2 className="text-2xl font-bold mb-6 text-center">Post a New Job</h2>
 
-                    <div className='grid grid-cols-2 gap-4'>
+            {/* Container */}
+            <div className="flex items-center justify-center w-full p-4 md:p-10">
+
+                {/* Responsive Form */}
+                <form
+                    onSubmit={submitHandler}
+                    className="w-full max-w-3xl p-6 md:p-10 border shadow-xl rounded-xl bg-white"
+                >
+                    <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center">
+                        Post a New Job
+                    </h2>
+
+                    {/* Grid = 2 columns on medium screens, 1 column on mobile */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                        {/* Title */}
                         <div>
                             <Label>Title *</Label>
                             <input
-                                className='w-full focus-visible:ring-offset-0 focus-visible:ring-1 my-1 border rounded p-2'
+                                className="w-full border rounded p-2 my-1 focus-visible:ring-1"
                                 type="text"
-                                name='title'
+                                name="title"
                                 value={input.title}
                                 onChange={changeEventHandler}
                                 required
-                                placeholder='' />
+                            />
                         </div>
+
+                        {/* Description */}
                         <div>
                             <Label>Description *</Label>
                             <textarea
-                                className='w-full focus-visible:ring-offset-0 focus-visible:ring-1 my-1 border rounded p-2'
-                                name='description'
+                                className="w-full border rounded p-2 my-1 focus-visible:ring-1"
+                                name="description"
                                 rows="3"
                                 value={input.description}
                                 onChange={changeEventHandler}
                                 required
-                                placeholder=''></textarea>
+                            ></textarea>
                         </div>
+
+                        {/* Requirements */}
                         <div>
                             <Label>Requirements *</Label>
                             <textarea
-                                className='w-full focus-visible:ring-offset-0 focus-visible:ring-1 my-1 border rounded p-2'
-                                name='requirements'
+                                className="w-full border rounded p-2 my-1 focus-visible:ring-1"
+                                name="requirements"
                                 rows="3"
-                                value={input.requirement}
+                                value={input.requirements}
                                 onChange={changeEventHandler}
                                 required
-                                placeholder=''></textarea>
+                            ></textarea>
                         </div>
+
+                        {/* Salary */}
                         <div>
                             <Label>Salary *</Label>
                             <input
-                                className='w-full focus-visible:ring-offset-0 focus-visible:ring-1 my-1 border rounded p-2'
+                                className="w-full border rounded p-2 my-1 focus-visible:ring-1"
                                 type="text"
-                                name='salary'
+                                name="salary"
                                 value={input.salary}
                                 onChange={changeEventHandler}
                                 required
-                                placeholder='' />
+                            />
                         </div>
+
+                        {/* Location */}
                         <div>
                             <Label>Location *</Label>
                             <input
-                                className='w-full focus-visible:ring-offset-0 focus-visible:ring-1 my-1 border rounded p-2'
+                                className="w-full border rounded p-2 my-1 focus-visible:ring-1"
                                 type="text"
-                                name='location'
+                                name="location"
                                 value={input.location}
                                 onChange={changeEventHandler}
                                 required
-                                placeholder='' />
+                            />
                         </div>
+
+                        {/* Job Type */}
                         <div>
                             <Label>Job Type *</Label>
                             <select
-                                className='w-full focus-visible:ring-offset-0 focus-visible:ring-1 my-1 border rounded p-2'
-                                name='jobtype'
-                                value={input.jobType}
+                                className="w-full border rounded p-2 my-1"
+                                name="jobtype"
+                                value={input.jobtype}
                                 onChange={changeEventHandler}
-                                required>
+                                required
+                            >
                                 <option value="">Select Job Type</option>
                                 <option value="Full-time">Full-time</option>
                                 <option value="Part-time">Part-time</option>
@@ -179,84 +199,93 @@ const PostJob = () => {
                                 <option value="Remote">Remote</option>
                             </select>
                         </div>
+
+                        {/* Experience */}
                         <div>
                             <Label>Experience Level *</Label>
                             <select
-                                className='w-full focus-visible:ring-offset-0 focus-visible:ring-1 my-1 border rounded p-2'
-                                name='experience'
+                                className="w-full border rounded p-2 my-1"
+                                name="experience"
                                 value={input.experience}
                                 onChange={changeEventHandler}
-                                required>
+                                required
+                            >
                                 <option value="">Select Experience Level</option>
                                 <option value="Entry">Entry Level</option>
                                 <option value="Mid">Mid Level</option>
                                 <option value="Senior">Senior Level</option>
                             </select>
                         </div>
+
+                        {/* Position */}
                         <div>
                             <Label>Number of Positions *</Label>
                             <input
-                                className='w-full focus-visible:ring-offset-0 focus-visible:ring-1 my-1 border rounded p-2'
+                                className="w-full border rounded p-2 my-1"
                                 type="number"
                                 min="1"
-                                name='position'
+                                name="position"
                                 value={input.position}
                                 onChange={changeEventHandler}
                                 required
-                                placeholder='0' />
+                            />
                         </div>
 
-                        {companiesLoading ? (
-                            <div className="col-span-2">
-                                <p>Loading companies...</p>
-                            </div>
-                        ) : companies.length > 0 ? (
-                            <div className="col-span-2">
-                                <Label>Select Company *</Label>
-                                <Select onValueChange={selectChangeHandler} required>
-                                    <SelectTrigger className="w-full my-1">
-                                        <SelectValue placeholder="Select a company" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectGroup>
-                                            <SelectLabel>Companies</SelectLabel>
-                                            {companies.map((company) => {
-                                                const value = company.name?.toLowerCase() || company._id;
-                                                const label = company.name || `Company ${company._id}`;
-                                                return (
-                                                    <SelectItem key={company._id} value={value}>
-                                                        {label}
+                        {/* Companies */}
+                        <div className="md:col-span-2">
+                            {companiesLoading ? (
+                                <p className="text-sm">Loading companies...</p>
+                            ) : companies.length > 0 ? (
+                                <>
+                                    <Label>Select Company *</Label>
+                                    <Select onValueChange={selectChangeHandler} required>
+                                        <SelectTrigger className="w-full my-1">
+                                            <SelectValue placeholder="Select a company" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectLabel>Companies</SelectLabel>
+                                                {companies.map((company) => (
+                                                    <SelectItem
+                                                        key={company._id}
+                                                        value={company.name.toLowerCase()}
+                                                    >
+                                                        {company.name}
                                                     </SelectItem>
-                                                );
-                                            })}
-
-                                        </SelectGroup>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                        ) : (
-                            <div className="col-span-2">
-                                <Label>Company ID</Label>
-                                <input
-                                    className='w-full focus-visible:ring-offset-0 focus-visible:ring-1 my-1 border rounded p-2'
-                                    type="text"
-                                    name='companyId'
-                                    value={input.companyId}
-                                    onChange={changeEventHandler}
-                                    required
-                                    placeholder='' />
-                                <p className='text-xs text-red-700 my-2 font-bold'>*No companies found. Please enter a company ID manually*</p>
-                            </div>
-                        )}
+                                                ))}
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                </>
+                            ) : (
+                                <>
+                                    <Label>Company ID *</Label>
+                                    <input
+                                        className="w-full border rounded p-2 my-1"
+                                        type="text"
+                                        name="companyId"
+                                        value={input.companyId}
+                                        onChange={changeEventHandler}
+                                        required
+                                    />
+                                    <p className="text-xs text-red-600 font-medium">
+                                        *No companies found. Enter company ID manually.*
+                                    </p>
+                                </>
+                            )}
+                        </div>
                     </div>
 
+                    {/* Submit Button */}
                     {loading ? (
-                        <Button disabled className='w-full my-5'>
-                            <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                        <Button disabled className="w-full my-6">
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                             Please wait
                         </Button>
                     ) : (
-                        <Button type='submit' className='w-full my-5'>Post New Job</Button>
+                        <Button type="submit" className="w-full my-6">
+                            Post New Job
+                        </Button>
                     )}
                 </form>
             </div>

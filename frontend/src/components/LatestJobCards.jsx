@@ -2,27 +2,52 @@ import React from 'react'
 import { Badge } from "@/components/ui/badge"
 import { useNavigate } from 'react-router-dom';
 
-const LatestJobCards = ({job}) => {
-   console.log("Job data in LatestJobCards =>", job);  
-const navigate = useNavigate()
-  return (
-    
-    <div onClick={()=>navigate(`/description/${job._id}`)} className='flex justify-center items-center border-gray-500 cursor-pointer rounded-xl bg-zinc-200 shadow-2xl p-4'>
-      <div className='font-serif text-2xl'>
-        
+const LatestJobCards = ({ job }) => {
+  const navigate = useNavigate();
 
-      <h1>{job?.companyId?.name}</h1>
-      <p>{job?.company}</p>
+  return (
+    <div
+      onClick={() => navigate(`/description/${job._id}`)}
+      className="
+        w-full 
+        bg-zinc-200 
+        shadow-xl 
+        rounded-xl 
+        p-5 
+        cursor-pointer 
+        border 
+        hover:shadow-2xl 
+        transition 
+        duration-300
+      "
+    >
+
+      {/* Company Name */}
+      <h2 className="text-xl md:text-2xl font-serif font-semibold text-gray-900">
+        {job?.companyId?.name}
+      </h2>
+
+      {/* Job Title & Short Description */}
+      <div className="mt-2">
+        <h3 className="text-lg font-serif font-bold text-[#0a6140]">
+          {job?.title}
+        </h3>
+        <p className="text-sm md:text-base text-gray-700 mt-1 line-clamp-2">
+          {job?.description}
+        </p>
       </div>
-      <div className=' font-serif flex gap-4'>
-        <h1>{job?.title}</h1>
-        <p>{job?.description}...</p>
-      </div>
-      <div className='font-serif mt-2 gap-6 '>
-        <Badge className='text-[#0a6140] font-bold' variant='ghost'>{job?.position}</Badge>
-        <Badge className='text-[#0b0b0b] font-bold' variant='ghost'>{job?.experience}</Badge>
-        <Badge className='text-[#ce6b09] font-bold' variant='ghost'>{job?.salary}</Badge>
-        <Badge className='text-[#040404] font-bold' variant='ghost'>{}</Badge>
+
+      {/* Badges Section */}
+      <div className="flex flex-wrap gap-3 mt-4">
+        <Badge className="text-[#0a6140] font-bold" variant="ghost">
+          {job?.position}
+        </Badge>
+        <Badge className="text-[#0b0b0b] font-bold" variant="ghost">
+          {job?.experience}
+        </Badge>
+        <Badge className="text-[#ce6b09] font-bold" variant="ghost">
+          {job?.salary}
+        </Badge>
       </div>
     </div>
   )
