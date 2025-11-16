@@ -3,7 +3,8 @@ import cookieParser from 'cookie-parser';
 import router from './routes/user.route.js';
 import companyRoute from "./routes/company.route.js"
 import jobroute from "./routes/job.route.js"
-import applicantRoute from './routes/application.route.js'
+import applicantRoute from './routes/application.route.js';
+
 const app = express();
 import cors from 'cors';
 
